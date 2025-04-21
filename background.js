@@ -1,6 +1,6 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === "GET_API_RESPONSE") {
-      const GROQ_API_KEY = "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"; // Replace with your API key
+      const GROQ_API_KEY = "YOUR GROQ API"; // Replace with your API key
       const url = "https://api.groq.com/openai/v1/chat/completions";
       const model = "llama3-70b-8192";
   
