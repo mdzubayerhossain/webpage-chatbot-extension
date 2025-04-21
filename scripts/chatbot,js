@@ -1,0 +1,37 @@
+// Avoid reinjection
+if (document.getElementById("groq-sidebar")) {
+    return;
+  }
+  
+  const sidebar = document.createElement("div");
+  sidebar.id = "groq-sidebar";
+  sidebar.innerHTML = `
+    <div id="chat-output"></div>
+    <form id="chat-form">
+      <textarea id="groq-input" placeholder="Ask about this page..."></textarea>
+      <button type="submit" id="send-btn">Send</button>
+    </form>
+  `;
+  document.body.appendChild(sidebar);
+  const style = document.createElement("link");
+  style.rel = "stylesheet";
+  style.href = chrome.runtime.getURL("content.css");
+  document.head.appendChild(style);
+  
+  // Handle form
+  document.getElementById("chat-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const input = document.getElementById("groq-input").value;
+    if (!input) return;
+  
+    const userMsg = `<p><strong>You:</strong> ${input}</p>`;
+    document.getElementById("chat-output").innerHTML += userMsg;
+  
+    const pageContent = document.body.innerText.slice(0, 5000); // limit length
+    const res = await sendToGROQ(input, pageContent);
+  
+    const botMsg = `<p><strong>Bot:</strong> ${res}</p>`;
+    document.getElementById("chat-output").innerHTML += botMsg;
+    document.getElementById("groq-input").value = "";
+  });
+  if (document.getElementById("groq-sidebar")) return;
